@@ -3,16 +3,14 @@
            https://api.github.com/users/<your name>
 */
 const user = 'kennaalastair';
+//get cards
+const cards = document.querySelector('.cards'); 
 
 axios.get(`https://api.github.com/users/${user}`)
-  .then(mainUser => {
-    console.log('github kennaalastair data:', mainUser);
-    //get .cards
-    const cards = document.querySelector('.cards');
-    cards.appendChild(userCard({userData: mainUser.data}));
-  })
-  .then(() => {
-    axios.get(`https://api.github.com/users/${user}/`)
+  .then(res => {
+    console.log('github kennaalastair data:', res.data);
+    const card = createCard(res.data);
+    cards.append(card);
   })
   .catch(error => {
     console.log('API is not working, try again later', error);
@@ -59,54 +57,77 @@ const followersArray = [];
   </div>
 </div>
 */
-function userCard({userData}) {
+function createCard(user) {
   //create elements
   const card = document.createElement('div');
-  const img = document.createElement('img');
-  const cardInfo = document.createElement('div');
-  const name = document.createElement('h3');
-  const userName = document.createElement('p');
-  const location = document.createElement('p');
-  const profile = document.createElement('p');
-  const profileAddress = document.createElement('a');
-  const followers = document.createElement('p');
-  const following = document.createElement('p');
-  const bio = document.createElement('p');
-
-  //put elements in order
-  card.appendChild(img);
-
   card.classList.add('card');
 
-  card.appendChild(cardInfo);
+  const avatar = document.createElement('img');
+  avatar.src = user.avatar_url;
+
+  const cardInfo = document.createElement('div');
   cardInfo.classList.add('card-info');
 
-
-  cardInfo.appendChild(name);
+  const name = document.createElement('h3');
   name.classList.add('name');
-  // name.textContent = 
+  name.textContent = user.name; 
 
-  cardInfo.appendChild(userName);
+  const userName = document.createElement('p');
   userName.classList.add('username');
-  // userName.textContent = 
+  userName.textContent = user.login;
 
-  cardInfo.appendChild(location);
-  // location.textContent = 
+  const location = document.createElement('p');
+  location.classList.add('location');
+  location.textContent = `Location: ${user.location}`;
 
-  cardInfo.appendChild(profile);
-  // profile.textContent = 
+  const profile = document.createElement('p');
+  profile.classList.add('profile');
+  profile.textContent = 'Profile: ';
 
-  profile.appendChild(profileAddress);
-  // profileAddress.textContent = 
+  const link = document.createElement('a');
+  link.href = user.html_url;
+  link.textContent = user.html_url;
 
-  cardInfo.appendChild(followers);
-  // followers.textContent = 
+  const followers = document.createElement('p');
+  followers.textContent = `Followers: ${user.followers}`;
 
-  cardInfo.appendChild(following);
-  // following.textContent = 
+  const following = document.createElement('p');
+  following.textContent = `Following: ${user.following}`;
 
-  cardInfo.appendChild(bio);
-  // bio.textContent = 
+  const bio = document.createElement('p');
+  bio.textContent = `Bio: ${user.bio || 'none'}`;
+
+  //put elements in order
+  card.append(avatar);
+  card.append(cardInfo);
+  cardInfo.append(
+    name,
+    userName,
+    location,
+    profile,
+    followers,
+    following,
+    bio
+  );
+  profile.append(link);
+
+  // cardInfo.append(location);
+  // // location.textContent = 
+
+  // cardInfo.append(profile);
+  // // profile.textContent = 
+
+  // profile.append(profileAddress);
+  // // profileAddress.textContent = 
+
+  // cardInfo.append(followers);
+  // // followers.textContent = 
+
+  // cardInfo.append(following);
+  // // following.textContent = 
+
+  // cardInfo.append(bio);
+  // // bio.textContent = 
 
   return card;
 }
