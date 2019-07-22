@@ -38,7 +38,22 @@ axios.get(`https://api.github.com/users/${user}`)
 */
 
 const followersArray = [];
+const instructors = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
 
+instructors.forEach(instructor => {
+  axios.get(`https://api.github.com/users/${instructor}`)
+    .then(res => {
+      console.log(res.data);
+      const card = createCard(res.data);
+      cards.append(card);
+    });
+});
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -78,7 +93,7 @@ function createCard(user) {
 
   const location = document.createElement('p');
   location.classList.add('location');
-  location.textContent = `Location: ${user.location}`;
+  location.textContent = `Location: ${user.location || 'another planet'}`;
 
   const profile = document.createElement('p');
   profile.classList.add('profile');
@@ -110,24 +125,6 @@ function createCard(user) {
     bio
   );
   profile.append(link);
-
-  // cardInfo.append(location);
-  // // location.textContent = 
-
-  // cardInfo.append(profile);
-  // // profile.textContent = 
-
-  // profile.append(profileAddress);
-  // // profileAddress.textContent = 
-
-  // cardInfo.append(followers);
-  // // followers.textContent = 
-
-  // cardInfo.append(following);
-  // // following.textContent = 
-
-  // cardInfo.append(bio);
-  // // bio.textContent = 
 
   return card;
 }
