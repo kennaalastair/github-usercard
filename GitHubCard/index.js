@@ -2,6 +2,19 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+const user = 'kennaalastair';
+//get cards
+const cards = document.querySelector('.cards'); 
+
+axios.get(`https://api.github.com/users/${user}`)
+  .then(res => {
+    console.log('github kennaalastair data:', res.data);
+    const card = createCard(res.data);
+    cards.append(card);
+  })
+  .catch(error => {
+    console.log('API is not working, try again later', error);
+  })
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -25,7 +38,22 @@
 */
 
 const followersArray = [];
+const instructors = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
 
+instructors.forEach(instructor => {
+  axios.get(`https://api.github.com/users/${instructor}`)
+    .then(res => {
+      console.log(res.data);
+      const card = createCard(res.data);
+      cards.append(card);
+    });
+});
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -43,8 +71,64 @@ const followersArray = [];
     <p>Bio: {users bio}</p>
   </div>
 </div>
-
 */
+function createCard(user) {
+  //create elements
+  const card = document.createElement('div');
+  card.classList.add('card');
+
+  const avatar = document.createElement('img');
+  avatar.src = user.avatar_url;
+
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+
+  const name = document.createElement('h3');
+  name.classList.add('name');
+  name.textContent = user.name; 
+
+  const userName = document.createElement('p');
+  userName.classList.add('username');
+  userName.textContent = user.login;
+
+  const location = document.createElement('p');
+  location.classList.add('location');
+  location.textContent = `Location: ${user.location || 'another planet'}`;
+
+  const profile = document.createElement('p');
+  profile.classList.add('profile');
+  profile.textContent = 'Profile: ';
+
+  const link = document.createElement('a');
+  link.href = user.html_url;
+  link.textContent = user.html_url;
+
+  const followers = document.createElement('p');
+  followers.textContent = `Followers: ${user.followers}`;
+
+  const following = document.createElement('p');
+  following.textContent = `Following: ${user.following}`;
+
+  const bio = document.createElement('p');
+  bio.textContent = `Bio: ${user.bio || 'none'}`;
+
+  //put elements in order
+  card.append(avatar);
+  card.append(cardInfo);
+  cardInfo.append(
+    name,
+    userName,
+    location,
+    profile,
+    followers,
+    following,
+    bio
+  );
+  profile.append(link);
+
+  return card;
+}
+
 
 /* List of LS Instructors Github username's: 
   tetondan
